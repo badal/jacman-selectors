@@ -6,6 +6,8 @@
 #
 # (c) Michel Demazure <michel@demazure.com>
 
+require 'yaml'
+
 module JacintheManagement
   module Selectors
     @all = []
@@ -18,7 +20,7 @@ module JacintheManagement
       @all << selector
     end
 
-    DIRECTORY = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'sql_files'))
+    DIRECTORY = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'source_files'))
   end
 end
 
