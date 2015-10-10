@@ -2,8 +2,8 @@
 
 :description:
   Il s'agit des membres qui ont adhéré pour la première fois l'année considérée.<br>
-  Cette année est à renseigner.<br>
-  Le fichier de sortie comporte identifiant, nom, type de l'adhésion.
+  Le fichier de sortie comporte identifiant, nom, type de l'adhésion.<br>
+  Cette année est à renseigner, ainsi que le type de l'adhésion.
 
 :query:
   CALL export_cadeau_init;
@@ -16,9 +16,17 @@
             ON client_sage_client_final=tiers_id
   LEFT JOIN adhesion_locale
             ON adhesion_locale_client_sage=client_sage_id
-  WHERE annee=PARAM
-  AND adhesion_locale_annee=PARAM
+  WHERE annee=YEAR
+  AND adhesion_locale_annee=YEAR
+  AND adhesion_locale_type LIKE PARAM
+
+:years:
+- '2015'
+- '2014'
 
 :parameter_list:
-- '2014'
-- '2015'
+- "'GT'"
+- "'STANDARD'"
+- "'PR'"
+- "'IN'"
+- "'%'"
