@@ -8,7 +8,6 @@
 
 module JacintheManagement
   module Selectors
-
     class Selector
       # only external API values
       attr_reader :name, :description, :parameter_list, :years, :tiers_list
@@ -16,7 +15,7 @@ module JacintheManagement
       def initialize(hsh)
         hsh.each_pair do |key, value|
           # self.attr_accessor key.to_sym
-          self.instance_variable_set("@#{key}", value)
+          instance_variable_set("@#{key}", value)
           # define_method key.to_sym { instance_variable_get :"@#{key}"}
         end
       end
@@ -27,10 +26,10 @@ module JacintheManagement
       end
 
       def creation_message(param, year)
-        par = "Paramètre : #{@parameter_list[param]}" if param >=0
+        par = "Paramètre : #{@parameter_list[param]}" if param >= 0
         ann = "Année de référence : #{@years[year]}" if year >= 0
-        text = "Vous pouvez créer la sélection"
-       [par, ann, text].compact.join('<br>')
+        text = 'Vous pouvez créer la sélection'
+        [par, ann, text].compact.join('<br>')
       end
 
       # TODO : useless with YAML, just kept in case
@@ -61,33 +60,32 @@ module JacintheManagement
       end
 
       def query_for_parameter(indx)
-        (indx < 0) ? @query : @query.gsub('PARAM', parameter_list[indx])
+        (indx < 0) ? @query : @query.gsub('PARAM', "'#{parameter_list[indx]}'")
       end
 
       def build_tiers_list(indx, year)
         query = query_for(indx, year)
-        p query
+        #  p query
         @tiers_list = Sql.answer_to_query(JACINTHE_MODE, query).drop(1)
         @tiers_list.size
       end
-
     end
 
     class Command < Selector
-
       def command_name
         'Nom spécifique'
       end
 
       def command_message
-        ['Vous pouvez aussi bien<ul><li>router</li>',
+        ['Vous pouvez tout aussi bien :<ul>',
+         '<li>router</li>',
          "<li>lancer la commande par le bouton '#{command_name}'</li>",
          '<li> lancer la commande, puis router</li>',
          '<li>router, puis lancer la commande</li></ul><hr>'].join
       end
 
-      def build_tiers_list(indx, year)
-        'OVERRIDDEN'
+      def build_tiers_list(_indx, _year)
+        # 'OVERRIDDEN'
         0
       end
 
@@ -97,14 +95,16 @@ module JacintheManagement
     end
   end
 
-  Selectors << Selectors::SimpleQuery.from_file('precedemment_gratuits')
 
-  Selectors << Selectors::SimpleQuery.from_file('nouvelles_adhesions')
 
-  sel3 = Selectors::Command.new(name: 'Commande simulée',
+  Selectors.add_from_file('precedemment_gratuits')
+  Selectors.add_from_file('nouvelles_adhesions')
+  Selectors.add_from_file('reabonnements')
+
+   sel3 = Selectors::Command.new(name: 'Commande simulée',
                                 description: 'Démo pour l\'ergonomie', parameter_list: %w(A B))
 
-  def sel3.build_tiers_list(indx, year)
+  def sel3.build_tiers_list(_indx, _year)
     @tiers_list = [14, 15, 16, 17, 383]
     @tiers_list.size
   end
@@ -120,4 +120,3 @@ module JacintheManagement
   Selectors << sel3
   # p Selectors.all
 end
-

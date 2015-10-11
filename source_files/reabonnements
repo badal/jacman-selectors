@@ -1,0 +1,34 @@
+:name: Réabonnements
+
+:description: Trouver les clients_sage qui ne sont pas abonnés à la revue choisie l'année
+  de référence, mais qui l'étaient l'année précédente.<br>
+  Cette année est à renseigner, ainsi que la revue.<br>
+  Le format de sortie comporte l'identifiant du client et le nom de la revue.
+
+:query: SELECT
+  client_sage_id, revue_nom
+  FROM client_sage
+  LEFT JOIN abonnement as abo1
+    ON abo1.abonnement_client_sage=client_sage.client_sage_id
+  LEFT JOIN revue
+    ON abo1.abonnement_revue=revue_id
+  WHERE
+    abo1.abonnement_annee=YEAR-1
+    AND revue_nom LIKE PARAM
+    AND NOT EXISTS
+      (SELECT * FROM abonnement as abo2
+       WHERE abo2.abonnement_client_sage=client_sage.client_sage_id
+       AND abo2.abonnement_annee=YEAR
+       AND abo2.abonnement_revue=abo1.abonnement_revue
+      )
+
+:years:
+- '2015'
+- '2014'
+
+:parameter_list:
+- '%'
+- 'Bulletin'
+- 'Annales%'
+- 'Mémoires'
+- '%Histoire%'

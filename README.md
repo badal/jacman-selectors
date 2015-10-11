@@ -2,7 +2,7 @@
   jacman-selectors is a ancillary gem for the Jacinthe Selector tool
 
 ## Version
-  0.1.0
+  0.1.2
 
 ## Synopsis
   jacman-selectors host the Selectors module and the Selector class.

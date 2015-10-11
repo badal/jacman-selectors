@@ -2,8 +2,9 @@
 
 :description:
   Il s'agit des membres qui ont adhéré pour la première fois l'année considérée.<br>
-  Le fichier de sortie comporte identifiant, nom, type de l'adhésion.<br>
-  Cette année est à renseigner, ainsi que le type de l'adhésion.
+  Cette année est à renseigner, ainsi que le type de l'adhésion.<br>
+  Le fichier de sortie comporte identifiant, nom, type de l'adhésion.
+
 
 :query:
   CALL export_cadeau_init;
@@ -25,8 +26,8 @@
 - '2014'
 
 :parameter_list:
-- "'GT'"
-- "'STANDARD'"
-- "'PR'"
-- "'IN'"
-- "'%'"
+- 'GT'
+- 'STANDARD'
+- 'PR'
+- 'IN'
+- '%'
