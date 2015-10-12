@@ -60,7 +60,9 @@ module JacintheManagement
       end
 
       def query_for_parameter(indx)
-        (indx < 0) ? @query : @query.gsub('PARAM', "'#{parameter_list[indx]}'")
+        q = (indx < 0) ? @query : @query.gsub('PARAM', "'#{parameter_list[indx]}'")
+        puts q
+        q
       end
 
       def build_tiers_list(indx, year)

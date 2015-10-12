@@ -1,14 +1,27 @@
 :name: Précédemment gratuits
+
 :description: Trouver les nouveaux adhérents d'une année,
   dont l'adhésion était gratuite l'année précédente.<br>
-  L'année est à renseigner en paramètre
+  Le fichier de sortie contient l'identifiant et le type de la nouvelle adhésion.<br>
+  L'année est à renseigner en paramètre.
+
 :query: SELECT
-  ad1.adhesion_locale_client_sage from adhesion_locale AS ad1
+  tiers_id, ad2.adhesion_locale_type
+  FROM tiers
+    LEFT JOIN client_sage AS client1
+      ON client1.client_sage_client_final=tiers_id
+    LEFT JOIN adhesion_locale AS ad1
+      ON ad1.adhesion_locale_client_sage=client1.client_sage_id
+    LEFT JOIN client_sage AS client2
+      ON client2.client_sage_client_final=tiers_id
     LEFT JOIN adhesion_locale AS ad2
-  ON ad1.adhesion_locale_client_sage=ad2.adhesion_locale_client_sage
-  WHERE ad1.adhesion_locale_annee=YEAR-1
+      ON ad2.adhesion_locale_client_sage=client2.client_sage_id
+  WHERE
+    tiers.tiers_etat=1
+    AND ad1.adhesion_locale_annee=YEAR-1
     AND ad2.adhesion_locale_annee=YEAR
     AND ad1.adhesion_locale_type='GT'
+
 :years:
 - '2015'
 - '2014'

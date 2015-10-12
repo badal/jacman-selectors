@@ -5,7 +5,6 @@
   Cette année est à renseigner, ainsi que le type de l'adhésion.<br>
   Le fichier de sortie comporte identifiant, nom, type de l'adhésion.
 
-
 :query:
   CALL export_cadeau_init;
   SELECT tiers_id, tiers_nom, adhesion_locale_type

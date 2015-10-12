@@ -1,23 +1,28 @@
 :name: Réabonnements
 
-:description: Trouver les clients_sage qui ne sont pas abonnés à la revue choisie l'année
+:description: Trouver les tiers qui ne sont pas abonnés à la revue choisie l'année
   de référence, mais qui l'étaient l'année précédente.<br>
   Cette année est à renseigner, ainsi que la revue.<br>
-  Le format de sortie comporte l'identifiant du client et le nom de la revue.
+  Le format de sortie comporte l'identifiant du tiers, le nom de la revue, le type de l'abonnement.
 
 :query: SELECT
-  client_sage_id, revue_nom
-  FROM client_sage
-  LEFT JOIN abonnement as abo1
-    ON abo1.abonnement_client_sage=client_sage.client_sage_id
+  tiers_id, revue_nom, abo1.abonnement_type
+  FROM tiers
+  LEFT JOIN client_sage AS client1
+    ON client1.client_sage_client_final=tiers_id
+  LEFT JOIN abonnement AS abo1
+    ON abo1.abonnement_client_sage=client1.client_sage_id
   LEFT JOIN revue
     ON abo1.abonnement_revue=revue_id
   WHERE
-    abo1.abonnement_annee=YEAR-1
+    tiers.tiers_etat=1
+    AND abo1.abonnement_annee=YEAR-1
     AND revue_nom LIKE PARAM
     AND NOT EXISTS
-      (SELECT * FROM abonnement as abo2
-       WHERE abo2.abonnement_client_sage=client_sage.client_sage_id
+      (SELECT * FROM abonnement AS abo2
+      LEFT JOIN client_sage AS client2
+        ON abo2.abonnement_client_sage = client2.client_sage_id
+      WHERE client2.client_sage_client_final=tiers_id
        AND abo2.abonnement_annee=YEAR
        AND abo2.abonnement_revue=abo1.abonnement_revue
       )
