@@ -24,7 +24,6 @@ module JacintheManagement
       @all << SimpleQuery.from_file(filename)
     end
 
-
     DIRECTORY = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'source_files'))
   end
 end

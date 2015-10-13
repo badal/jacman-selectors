@@ -1,0 +1,35 @@
+:name: Campagne de réadhésion
+
+:description:
+  Liste pour campagne de réadhésion.<br>
+  Le type de tiers est à renseigner.<br>
+  Le format de sortie est tiers_id, infos_complémentaires,
+  ce qui permet de voir la période d'adhésion.
+
+:query: SELECT
+  tiers_id, vue_tiers_infos_complementaires
+  FROM tiers
+    LEFT JOIN vue_tiers_infos
+      ON vue_tiers_infos_tiers=tiers_id
+    LEFT JOIN client_sage
+      ON client_sage.client_sage_client_final = tiers_id
+    LEFT JOIN adhesion_locale
+      ON adhesion_locale_client_sage = client_sage_id
+    LEFT JOIN type_tiers
+      ON tiers_type = type_tiers_id
+   WHERE
+     (adhesion_locale_ignorer = 0 OR adhesion_locale_ignorer IS NULL)
+     AND type_tiers_nom=PARAM
+     AND tiers_etat=1
+   GROUP BY tiers_id
+   HAVING
+     max(adhesion_locale_annee) = YEAR
+     AND max(adhesion_locale_annee) >= YEAR
+
+:parameter_list:
+- Individu
+- Institution
+
+:years:
+- 2015
+- 2014

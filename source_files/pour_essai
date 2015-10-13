@@ -1,8 +1,7 @@
-:name: Nouvelles adhésions
+:name: Essai sans params
 
 :description:
-  Il s'agit des membres qui ont adhéré pour la première fois l'année considérée.<br>
-  Cette année est à renseigner, ainsi que le type de l'adhésion.<br>
+  Il s'agit des membres qui ont adhéré pour la première fois l'année 2015.<br>
   Le fichier de sortie comporte identifiant, nom, type de l'adhésion, date du cadeau.
 
 :query:
@@ -16,17 +15,5 @@
             ON client_sage_client_final=tiers_id
   LEFT JOIN adhesion_locale
             ON adhesion_locale_client_sage=client_sage_id
-  WHERE annee=YEAR
-  AND adhesion_locale_annee=YEAR
-  AND adhesion_locale_type LIKE PARAM
-
-:years:
-- 2015
-- 2014
-
-:parameter_list:
-- 'GT'
-- 'STANDARD'
-- 'PR'
-- 'IN'
-- '%'
+  WHERE annee=2015
+  AND adhesion_locale_annee=2015

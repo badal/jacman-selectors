@@ -16,20 +16,23 @@
     ON abo1.abonnement_revue=revue_id
   WHERE
     tiers.tiers_etat=1
+    AND (abo1.abonnement_ignorer = 0 OR abo1.abonnement_ignorer IS NULL)
     AND abo1.abonnement_annee=YEAR-1
+
     AND revue_nom LIKE PARAM
     AND NOT EXISTS
       (SELECT * FROM abonnement AS abo2
       LEFT JOIN client_sage AS client2
         ON abo2.abonnement_client_sage = client2.client_sage_id
       WHERE client2.client_sage_client_final=tiers_id
+       AND (abo2.abonnement_ignorer = 0 OR abo2.abonnement_ignorer IS NULL)
        AND abo2.abonnement_annee=YEAR
        AND abo2.abonnement_revue=abo1.abonnement_revue
       )
 
 :years:
-- '2015'
-- '2014'
+- 2015
+- 2014
 
 :parameter_list:
 - '%'

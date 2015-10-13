@@ -18,11 +18,13 @@
       ON ad2.adhesion_locale_client_sage=client2.client_sage_id
   WHERE
     tiers.tiers_etat=1
+    AND (ad1.adhesion_locale_ignorer = 0 OR ad1.adhesion_locale_ignorer IS NULL)
+    AND (ad2.adhesion_locale_ignorer = 0 OR ad2.adhesion_locale_ignorer IS NULL)
     AND ad1.adhesion_locale_annee=YEAR-1
     AND ad2.adhesion_locale_annee=YEAR
     AND ad1.adhesion_locale_type='GT'
 
 :years:
-- '2015'
-- '2014'
+- 2015
+- 2014
 
