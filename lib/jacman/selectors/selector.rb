@@ -10,13 +10,24 @@ module JacintheManagement
   module Selectors
     class Selector
       # only external API values
-      attr_reader :name, :description, :years, :tiers_list, :command_name
+      attr_reader :name, :description, :tiers_list, :command_name
 
       def initialize(hsh)
         hsh.each_pair do |key, value|
           # self.attr_accessor key.to_sym
           instance_variable_set("@#{key}", value)
           # define_method key.to_sym { instance_variable_get :"@#{key}"}
+        end
+     end
+
+      def year_choice
+        case @years
+        when "complex"
+          ['= 2015', '= 2014', '<= 2013']
+        when "simple"
+          ['= 2015', '= 2014']
+        else
+          nil
         end
       end
 
@@ -42,21 +53,28 @@ module JacintheManagement
         @parameter_list[indx]
       end
 
+      def extract(values)
+        indx, condition = *values
+        parameter = "'#{@parameter_list[indx]}'" if (indx >= 0)
+        [parameter, condition]
+      end
+
       def parameter(query, values)
-        indx, year = *values
-        qry = (indx < 0) ? query : query.gsub('PARAM', "'#{parameter_value(indx)}'")
-        @years ? qry.gsub(/YEAR/, year.to_s) : qry
+        parameter, condition = extract(values)
+        qry = parameter ? query.gsub('PARAM', parameter) : query
+        condition ? qry.gsub('CONDITION', condition) : qry
       end
 
       def get_list(query, values)
         qry = parameter(query, values)
+        p qry
         Sql.answer_to_query(JACINTHE_MODE, qry).drop(1)
       end
 
       def creation_message(values)
-        indx, year = *values
-        par = "Paramètre : #{parameter_value(indx)}" if indx >= 0
-        ann = "Année de référence : #{@years[year]}" if @years
+        parameter, condition = extract(values)
+        par = "Paramètre : #{parameter}" if parameter
+        ann = "Année de référence #{condition.sub('<=', '&le;')}" if @years
         text = 'Vous pouvez créer la sélection'
         [par, ann, text].compact.join('<br>')
       end

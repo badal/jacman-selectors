@@ -13,18 +13,18 @@
   FROM
   tiers
   LEFT JOIN vue_tiers_adhesion_locale_premiere_annee
-            ON tiers_id=nouvel_adherent
+            ON tiers_id = nouvel_adherent
   LEFT JOIN client_sage
-            ON client_sage_client_final=tiers_id
+            ON client_sage_client_final = tiers_id
   LEFT JOIN adhesion_locale
-            ON adhesion_locale_client_sage=client_sage_id
-  WHERE annee=YEAR
-  AND adhesion_locale_annee=YEAR
-  AND tiers.tiers_cadeau_date IS NULL
+            ON adhesion_locale_client_sage = client_sage_id
+  WHERE
+    tiers_etat = 1
+    AND adhesion_locale_annee = annee
+    AND tiers.tiers_cadeau_date IS NULL
+    AND annee CONDITION
 
-:years:
-- '2015'
-- '2014'
+:years: simple
 
 :command_name:
   Marquer la date

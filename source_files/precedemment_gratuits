@@ -9,22 +9,21 @@
   tiers_id, ad2.adhesion_locale_type
   FROM tiers
     LEFT JOIN client_sage AS client1
-      ON client1.client_sage_client_final=tiers_id
+      ON client1.client_sage_client_final = tiers_id
     LEFT JOIN adhesion_locale AS ad1
-      ON ad1.adhesion_locale_client_sage=client1.client_sage_id
+      ON ad1.adhesion_locale_client_sage = client1.client_sage_id
     LEFT JOIN client_sage AS client2
-      ON client2.client_sage_client_final=tiers_id
+      ON client2.client_sage_client_final = tiers_id
     LEFT JOIN adhesion_locale AS ad2
-      ON ad2.adhesion_locale_client_sage=client2.client_sage_id
+      ON ad2.adhesion_locale_client_sage = client2.client_sage_id
   WHERE
     tiers.tiers_etat=1
     AND (ad1.adhesion_locale_ignorer = 0 OR ad1.adhesion_locale_ignorer IS NULL)
     AND (ad2.adhesion_locale_ignorer = 0 OR ad2.adhesion_locale_ignorer IS NULL)
-    AND ad1.adhesion_locale_annee=YEAR-1
-    AND ad2.adhesion_locale_annee=YEAR
-    AND ad1.adhesion_locale_type='GT'
+    AND ad1.adhesion_locale_annee = ad2.adhesion_locale_annee - 1
+    AND ad2.adhesion_locale_annee CONDITION
+    AND ad1.adhesion_locale_type = 'GT'
 
-:years:
-- 2015
-- 2014
+:years: simple
+
 

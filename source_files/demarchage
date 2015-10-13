@@ -9,11 +9,11 @@
 :query: SELECT tiers_id, vue_tiers_infos_complementaires
   FROM tiers
   LEFT JOIN vue_tiers_infos
-    ON tiers_id=vue_tiers_infos_tiers
+    ON tiers_id = vue_tiers_infos_tiers
   LEFT JOIN type_tiers
-    ON tiers_type=type_tiers_id
-  WHERE tiers.tiers_etat=1
-    AND type_tiers_nom=PARAM
+    ON tiers_type  =type_tiers_id
+  WHERE tiers.tiers_etat = 1
+    AND type_tiers_nom = PARAM
     AND vue_tiers_infos_complementaires NOT REGEXP 'Mb'
 
 :parameter_list:

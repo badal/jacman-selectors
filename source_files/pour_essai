@@ -10,10 +10,10 @@
   FROM
   tiers
   LEFT JOIN vue_tiers_adhesion_locale_premiere_annee
-            ON tiers_id=nouvel_adherent
+            ON tiers_id = nouvel_adherent
   LEFT JOIN client_sage
-            ON client_sage_client_final=tiers_id
+            ON client_sage_client_final = tiers_id
   LEFT JOIN adhesion_locale
-            ON adhesion_locale_client_sage=client_sage_id
-  WHERE annee=2015
-  AND adhesion_locale_annee=2015
+            ON adhesion_locale_client_sage = client_sage_id
+  WHERE annee = 2015
+  AND adhesion_locale_annee = 2015
