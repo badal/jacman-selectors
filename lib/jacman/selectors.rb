@@ -21,7 +21,7 @@ module JacintheManagement
     end
 
     def self.add_from_file(filename)
-      @all << SimpleQuery.from_file(filename)
+      @all << Selector.from_file(filename)
     end
 
     DIRECTORY = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'source_files'))

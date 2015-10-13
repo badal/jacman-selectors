@@ -4,12 +4,13 @@
   Il s'agit des membres qui ont adhéré pour la première fois l'année considérée
   et qui n'ont pas reçu le cadeau.<br>
   Cette année est à renseigner.<br>
-  On peut, si on le souhaite, marquer les cadeaux comme envoyés à la date du jour.
   Le fichier de sortie comporte identifiant, nom, type de l'adhésion.
+  <hr>
+  Une fois la sélection créée, on peut, par le bouton à cet effet, marquer les cadeaux comme envoyés à la date du jour.
 
 :query:
   CALL export_cadeau_init;
-  SELECT tiers_id, tiers_nom, adhesion_locale_type
+  SELECT tiers_id, tiers_prenom, tiers_nom, tiers_adresse_ville, tiers_adresse_pays, adhesion_locale_type
   FROM
   tiers
   LEFT JOIN vue_tiers_adhesion_locale_premiere_annee

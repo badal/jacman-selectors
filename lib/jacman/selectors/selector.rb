@@ -10,7 +10,7 @@ module JacintheManagement
   module Selectors
     class Selector
       # only external API values
-      attr_reader :name, :description, :tiers_list, :command_name
+      attr_reader :name, :description, :parameter_list, :tiers_list, :command_name
 
       def initialize(hsh)
         hsh.each_pair do |key, value|
@@ -43,11 +43,6 @@ module JacintheManagement
          '<li> lancer la commande, puis router</li>',
          '<li>router, puis lancer la commande</li></ul><hr>'].join
       end
-    end
-
-    class SimpleQuery < Selector
-
-      attr_reader :parameter_list
 
       def parameter_value(indx)
         @parameter_list[indx]
@@ -67,7 +62,6 @@ module JacintheManagement
 
       def get_list(query, values)
         qry = parameter(query, values)
-        p qry
         Sql.answer_to_query(JACINTHE_MODE, qry).drop(1)
       end
 
