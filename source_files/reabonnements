@@ -6,12 +6,14 @@
   Le format de sortie comporte l'identifiant du tiers, le nom de la revue, le type de l'abonnement.
 
 :query: SELECT
-  tiers_id, revue_nom, abo1.abonnement_type, abo1.abonnement_annee
+  tiers_id, revue_nom, type_abonnement_nom, abo1.abonnement_annee
   FROM tiers
   LEFT JOIN client_sage AS client1
     ON client1.client_sage_client_final = tiers_id
   LEFT JOIN abonnement AS abo1
     ON abo1.abonnement_client_sage = client1.client_sage_id
+  LEFT JOIN type_abonnement
+    ON abo1.abonnement_type = type_abonnement_id
   LEFT JOIN revue
     ON abo1.abonnement_revue = revue_id
   WHERE

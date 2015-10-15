@@ -10,7 +10,7 @@ module JacintheManagement
   module Selectors
     class Selector
       # only external API values
-      attr_reader :name, :description, :parameter_list, :tiers_list, :command_name
+      attr_reader :name, :description, :parameter_list, :command_name, :tiers_list
 
       def initialize(hsh)
         hsh.each_pair do |key, value|
@@ -18,21 +18,19 @@ module JacintheManagement
           instance_variable_set("@#{key}", value)
           # define_method key.to_sym { instance_variable_get :"@#{key}"}
         end
-     end
+      end
 
       def year_choice
         case @years
-        when "complex"
+        when 'complex'
           ['= 2015', '= 2014', '<= 2013']
-        when "simple"
+        when 'simple'
           ['= 2015', '= 2014']
-        else
-          nil
         end
       end
 
-      def self.from_file(filename)
-        hsh = YAML.load_file(File.join(DIRECTORY, filename))
+      def self.from_file(path)
+        hsh = YAML.load_file(path)
         new(hsh)
       end
 
@@ -67,9 +65,9 @@ module JacintheManagement
 
       def creation_message(values)
         parameter, condition = extract(values)
-        par = "Paramètre : #{parameter}" if parameter
-        ann = "Année de référence #{condition.sub('<=', '&le;')}" if @years
-        text = 'Vous pouvez créer la sélection'
+        par = "Paramètre : #{parameter}." if parameter
+        ann = "Année de référence #{condition.sub('<=', '&le;')}." if @years
+        text = 'Vous pouvez créer la sélection.'
         [par, ann, text].compact.join('<br>')
       end
 
@@ -83,14 +81,6 @@ module JacintheManagement
       end
     end
   end
-
-  Selectors.add_from_file('pour_essai')
-  Selectors.add_from_file('campagne')
-  Selectors.add_from_file('demarchage')
-  Selectors.add_from_file('precedemment_gratuits')
-  Selectors.add_from_file('nouvelles_adhesions')
-  Selectors.add_from_file('reabonnements')
-  Selectors.add_from_file('cadeaux')
 
   # p Selectors.all
 end
