@@ -105,8 +105,9 @@ module JacintheManagement
       end
 
       def execute(values)
-        commands = commands(values)
-        commands.join("\n")
+        cmds = commands(values)
+        Sql.query(JACINTHE_MODE, cmds.join(';'))
+        "Commande exécutée"
       end
 
       def commands(values)

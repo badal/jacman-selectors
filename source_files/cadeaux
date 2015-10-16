@@ -1,10 +1,10 @@
-:name: Cadeaux
+:name: Cadeaux à enovyer
 
 :description:
   Il s'agit des membres qui ont adhéré pour la première fois l'année considérée
-  et qui n'ont pas reçu le cadeau.<br>
+  et qui n'ont pas encore reçu le cadeau.<br>
   Cette année est à renseigner.<br>
-  Le fichier de sortie comporte identifiant, nom, type de l'adhésion.
+  Le fichier de sortie comporte le tiers et le type de l'adhésion.
   <hr>
   Une fois la sélection créée, on peut, par le bouton à cet effet, marquer les cadeaux comme envoyés à la date du jour.
 
@@ -28,7 +28,7 @@
 :years: simple
 
 :command_name:
-  Marquer la date
+  Marquer comme envoyés
 
 :command_query:
   UPDATE tiers
