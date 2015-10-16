@@ -6,7 +6,7 @@
   L'année est à renseigner en paramètre.
 
 :query: SELECT
-  tiers_id, ad2.adhesion_locale_type
+  TIERS_DESC, ad2.adhesion_locale_type
   FROM tiers
     LEFT JOIN client_sage AS client1
       ON client1.client_sage_client_final = tiers_id

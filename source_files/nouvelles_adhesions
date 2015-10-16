@@ -7,7 +7,7 @@
 
 :query:
   CALL export_cadeau_init;
-  SELECT tiers_id, tiers_nom, adhesion_locale_type, tiers_cadeau_date
+  SELECT TIERS_DESC, adhesion_locale_type, tiers_cadeau_date
   FROM
   tiers
   LEFT JOIN vue_tiers_adhesion_locale_premiere_annee

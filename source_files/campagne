@@ -9,7 +9,7 @@
   ce qui permet de voir la période d'adhésion.
 
 :query: SELECT
-  tiers_id, vue_tiers_infos_complementaires
+  TIERS_DESC, vue_tiers_infos_complementaires
   FROM tiers
     LEFT JOIN vue_tiers_infos
       ON vue_tiers_infos_tiers = tiers_id

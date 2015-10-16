@@ -9,8 +9,33 @@
 module JacintheManagement
   module Selectors
     class Selector
+      TIERS_DESCRIPTION = "tiers_id, CONCAT_WS(' ', tiers_prenom, tiers_nom), tiers_adresse_ville, tiers_adresse_pays"
+      FIRST_LABELS = ['tiers_id', 'Nom', 'Ville', 'Pays']
+
+      NO_TAB_TAB = '[^\\t]*\\t'
+      PATTERN = Regexp.new('(^' + NO_TAB_TAB * 3 + ')(\d*)(\\t.*)$')
+
+      def self.build_countries
+        list = Sql.answer_to_query(JACINTHE_MODE, 'select * from pays').drop(1)
+        countries = []
+        list.each do |line|
+          id, name, = line.split("\t")
+          countries[id.to_i] = name
+        end
+        countries
+      end
+
+      def self.countries
+        @countries ||= build_countries
+      end
+
+      def self.fix_line(line)
+        PATTERN.match(line) ? $1 + countries[$2.to_i] + $3 : line
+      end
+
       # only external API values
-      attr_reader :name, :description, :parameter_list, :command_name, :tiers_list
+      attr_reader :name, :description, :parameter_list, :command_name
+      attr_accessor :tiers_list
 
       def initialize(hsh)
         hsh.each_pair do |key, value|
@@ -53,14 +78,17 @@ module JacintheManagement
       end
 
       def parameter(query, values)
+        query.sub!('TIERS_DESC', TIERS_DESCRIPTION)
         parameter, condition = extract(values)
         qry = parameter ? query.gsub('PARAM', parameter) : query
         condition ? qry.gsub('CONDITION', condition) : qry
       end
 
+
       def get_list(query, values)
         qry = parameter(query, values)
-        Sql.answer_to_query(JACINTHE_MODE, qry).drop(1)
+        list = Sql.answer_to_query(JACINTHE_MODE, qry)
+        list.map { |line| Selector.fix_line(line) }
       end
 
       def creation_message(values)
@@ -73,11 +101,20 @@ module JacintheManagement
 
       def build_tiers_list(values)
         @tiers_list = get_list(@query, values)
-        @tiers_list.size
+        @tiers_list.size - 1
       end
 
       def execute(values)
-        qry = parameter(@execute_query, values)
+        commands = commands(values)
+        commands.join("\n")
+      end
+
+      def commands(values)
+        qry = parameter(@command_query, values)
+        @tiers_list.drop(1).map do |line|
+          tiers_id = line.split("\t").first
+          qry.sub('TIERS_ID', tiers_id)
+        end
       end
     end
   end

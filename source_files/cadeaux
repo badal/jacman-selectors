@@ -10,7 +10,7 @@
 
 :query:
   CALL export_cadeau_init;
-  SELECT tiers_id, tiers_prenom, tiers_nom, tiers_adresse_ville, tiers_adresse_pays, adhesion_locale_type
+  SELECT TIERS_DESC, adhesion_locale_type
   FROM
   tiers
   LEFT JOIN vue_tiers_adhesion_locale_premiere_annee
@@ -30,5 +30,7 @@
 :command_name:
   Marquer la date
 
-:execute_query:
-  CALL export_cadeau(YEAR)
+:command_query:
+  UPDATE tiers
+  SET tiers_cadeau_date = CURDATE()
+  WHERE tiers_id=TIERS_ID

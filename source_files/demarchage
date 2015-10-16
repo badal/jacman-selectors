@@ -6,7 +6,8 @@
   Le format de sortie est tiers_id, infos_complémentaires,
   ce qui permet de voir que certains ont été aboonés ou sont actuellement abonnés.
 
-:query: SELECT tiers_id, vue_tiers_infos_complementaires
+:query:
+  SELECT TIERS_DESC, vue_tiers_infos_complementaires
   FROM tiers
   LEFT JOIN vue_tiers_infos
     ON tiers_id = vue_tiers_infos_tiers

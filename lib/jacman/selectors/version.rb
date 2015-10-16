@@ -10,7 +10,7 @@ module JacintheManagement
   module Selectors
     MAJOR = 0
     MINOR = 1
-    TINY = 10
+    TINY = 11
 
     VERSION = [MAJOR, MINOR, TINY].join('.')
   end
