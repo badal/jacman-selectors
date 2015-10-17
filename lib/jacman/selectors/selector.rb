@@ -10,27 +10,31 @@ module JacintheManagement
   module Selectors
     class Selector
       TIERS_DESCRIPTION = "tiers_id, CONCAT_WS(' ', tiers_prenom, tiers_nom), tiers_adresse_ville, tiers_adresse_pays"
-      FIRST_LABELS = ['tiers_id', 'Nom', 'Ville', 'Pays']
+      FIRST_LABELS = %w(tiers_id Nom Ville Pays)
 
       NO_TAB_TAB = '[^\\t]*\\t'
       PATTERN = Regexp.new('(^' + NO_TAB_TAB * 3 + ')(\d*)(\\t.*)$')
 
-      def self.build_countries
-        list = Sql.answer_to_query(JACINTHE_MODE, 'select * from pays').drop(1)
-        countries = []
+      def self.extract_from(table)
+        list = Sql.answer_to_query(JACINTHE_MODE, "select * from #{table}").drop(1)
+        res = []
         list.each do |line|
-          id, name, = line.split("\t")
-          countries[id.to_i] = name
+          id, name = *line.chomp.split("\t")
+          res[id.to_i] = name
         end
-        countries
+        res
       end
 
       def self.countries
-        @countries ||= build_countries
+        @countries ||= extract_from('pays')
       end
 
       def self.fix_line(line)
-        PATTERN.match(line) ? $1 + countries[$2.to_i] + $3 : line
+        if PATTERN.match(line) then
+          Regexp.last_match(1) + countries[Regexp.last_match(2).to_i] + Regexp.last_match(3)
+        else
+          line
+        end
       end
 
       # only external API values
@@ -84,7 +88,6 @@ module JacintheManagement
         condition ? qry.gsub('CONDITION', condition) : qry
       end
 
-
       def get_list(query, values)
         qry = parameter(query, values)
         list = Sql.answer_to_query(JACINTHE_MODE, qry)
@@ -107,7 +110,7 @@ module JacintheManagement
       def execute(values)
         cmds = commands(values)
         Sql.query(JACINTHE_MODE, cmds.join(';'))
-        "Commande exécutée"
+        'Commande exécutée'
       end
 
       def commands(values)
@@ -122,19 +125,3 @@ module JacintheManagement
 
   # p Selectors.all
 end
-
-# TODO : useless with YAML, just kept in case
-# # @param [Array<String>] content content of a SQL source file
-# # @return [String] query cleaned from comments, empty lines  and extra spaces
-# def self.clean(content)
-#   content.lines
-#       .reject { |line| /^--/.match(line) }
-#       .map(&:chomp)
-#       .join(' ')
-#       .gsub(/\s+/, ' ')
-# end
-#
-# def self.query_from_file(filename)
-#   content = File.read(File.join(DIRECTORY, filename))
-#   clean(content)
-# end

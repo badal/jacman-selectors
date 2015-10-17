@@ -13,6 +13,7 @@ require_relative 'selectors/selector.rb'
 
 module JacintheManagement
   module Selectors
+
     @all = []
 
     def self.all
@@ -27,14 +28,12 @@ module JacintheManagement
       @all << Selector.from_file(File.join(DIRECTORY, filename))
     end
 
-    DIRECTORY = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'source_files'))
+    def self.add_from_directory(directory, extension = '')
+      Dir.glob("#{directory}/**/*#{extension}").each do |path|
+        @all << Selector.from_file(path)
+      end
+    end
   end
-
-  Selectors.add_from_file('pour_essai')
-  Selectors.add_from_file('campagne')
-  Selectors.add_from_file('demarchage')
-  Selectors.add_from_file('precedemment_gratuits')
-  Selectors.add_from_file('nouvelles_adhesions')
-  Selectors.add_from_file('reabonnements')
-  Selectors.add_from_file('cadeaux')
 end
+
+
