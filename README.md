@@ -2,12 +2,13 @@
   jacman-selectors is a ancillary gem for the Jacinthe Selector tool
 
 ## Version
-  0.1.12
+  1.1
 
 ## Synopsis
   jacman-selectors host the Selectors module and the Selector class.
 
 ## Usage
+  called by the Selector GUI
 
 ## More documentation
    See the Yardoc/RDoc documentation.

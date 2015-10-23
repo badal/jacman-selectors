@@ -12,22 +12,23 @@ require_relative 'selectors/version.rb'
 require_relative 'selectors/selector.rb'
 
 module JacintheManagement
+  # global methods for the Selector GUI
   module Selectors
-
     @all = []
 
+    # @return [Array<Selector>] all registered selectors
     def self.all
       @all
     end
 
+    # @param [Selector] selector selector to be registered
     def self.<<(selector)
       @all << selector
     end
 
-    def self.add_from_file(filename)
-      @all << Selector.from_file(File.join(DIRECTORY, filename))
-    end
-
+    # @return [Array<Selector>] all registered selectors
+    # @param [Path] directory where to look for selector files
+    # @param [String] extension extension of the files, including the initial dot
     def self.add_from_directory(directory, extension = '')
       Dir.glob("#{directory}/**/*#{extension}").each do |path|
         @all << Selector.from_file(path)
@@ -35,5 +36,3 @@ module JacintheManagement
     end
   end
 end
-
-
