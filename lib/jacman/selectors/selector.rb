@@ -51,6 +51,13 @@ module JacintheManagement
         end
       end
 
+      def self.fix_format(list)
+        old_labels = list.shift
+        labels = old_labels.sub(Regexp.new('(^' + NO_TAB_TAB * FIRST_LABELS.size + ')'), FIRST_LABELS.join("\t") + "\t")
+        res = list.map { |line| Selector.fix_line(line) }
+        [labels] + res
+      end
+
       @year = Time.now.year
       @month = Time.now.month
 
@@ -103,7 +110,7 @@ module JacintheManagement
       def get_list(query, values)
         qry = parameter(query, values)
         list = Sql.answer_to_query(JACINTHE_MODE, qry)
-        list.map { |line| Selector.fix_line(line) }
+        list.empty? ? list : Selector.fix_format(list)
       end
 
       # @api
