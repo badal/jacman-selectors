@@ -115,23 +115,13 @@ module JacintheManagement
     end
 
     class FormatterTiersAdr < Formatter
+      ADDRESS_CALL = 'get_tiers_adresse_for_usage(tiers_id, 1)'
       def fix_labels(old_labels)
-        "#{old_labels}\tAdresse"
+        old_labels.sub(ADDRESS_CALL, 'Adresse')
       end
 
       def explicit(query)
-        query.sub('+TIERS_ADR', '')
-      end
-
-      def fix_line(line)
-        tiers_id = line[/^[^\t]*/]
-        address = fetch_address_for_tiers(tiers_id)
-        "#{line}\t#{address}"
-      end
-
-      def fetch_address_for_tiers(tiers_id)
-        qry = "select get_tiers_adresse_for_usage(#{tiers_id}, 1)"
-        Sql.answer_to_query(JACINTHE_MODE, qry)[1]
+        query.sub('TIERS_ADR', ADDRESS_CALL)
       end
     end
   end
