@@ -10,54 +10,6 @@ module JacintheManagement
   module Selectors
     # selectors for the Selector GUI
     class Selector
-      # SQL fragment for Tiers description
-      TIERS_DESCRIPTION = "tiers_id, CONCAT_WS(' ', tiers_prenom, tiers_nom), tiers_adresse_ville, tiers_adresse_pays"
-      # Labels for the above fragment
-      FIRST_LABELS = %w(tiers_id Nom Ville Pays)
-
-      # partial pattern
-      NO_TAB_TAB = '[^\\t]*\\t'
-      # pattern to separate the country id
-      PATTERN = Regexp.new('(^' + NO_TAB_TAB * 3 + ')(\d*)(\\t.*)$')
-
-      # SQL generic tool to extract the array : id -> name from basic tables
-      #
-      # @param [String] table SQL table
-      # @return [Array<String>] array array of names
-      def self.extract_from(table)
-        list = Sql.answer_to_query(JACINTHE_MODE, "select * from #{table}").drop(1)
-        res = []
-        list.each do |line|
-          id, name = *line.chomp.split("\t")
-          res[id.to_i] = name
-        end
-        res
-      end
-
-      # @return [Array<String>] name of countries, accessed by 'pays_id'
-      def self.countries
-        @countries ||= extract_from('pays')
-      end
-
-      # Replace in SQL answer the country id by the country name
-      #
-      # @param [String] line line from SQL answer
-      # @return [String] completed line
-      def self.fix_line(line)
-        if PATTERN.match(line)
-          Regexp.last_match(1) + countries[Regexp.last_match(2).to_i] + Regexp.last_match(3)
-        else
-          line
-        end
-      end
-
-      def self.fix_format(list)
-        old_labels = list.shift
-        labels = old_labels.sub(Regexp.new('(^' + NO_TAB_TAB * FIRST_LABELS.size + ')'), FIRST_LABELS.join("\t") + "\t")
-        res = list.map { |line| Selector.fix_line(line) }
-        [labels] + res
-      end
-
       @year = Time.now.year
       @month = Time.now.month
 
@@ -110,7 +62,8 @@ module JacintheManagement
       def get_list(query, values)
         qry = parameter(query, values)
         list = Sql.answer_to_query(JACINTHE_MODE, qry)
-        list.empty? ? list : Selector.fix_format(list)
+        return list if list.empty?
+        Formatters.fix_format(list)
       end
 
       # @api
@@ -183,7 +136,10 @@ module JacintheManagement
       # @param [Array] values transmitted by the GUI
       # @return [String] actual query
       def parameter(query, values)
-        query.sub!('TIERS_DESC', TIERS_DESCRIPTION)
+        query = Formatters.explicit(query)
+
+        p query
+
         parameter, condition = extract(values)
         qry = parameter ? query.gsub('PARAM', parameter) : query
         condition ? qry.gsub('CONDITION', condition) : qry
@@ -200,6 +156,4 @@ module JacintheManagement
       end
     end
   end
-
-  # p Selectors.all
 end
