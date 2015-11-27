@@ -18,17 +18,23 @@ module JacintheManagement
       end
 
       def self.explicit(query)
-        assign_formatters(query)
-
         @formatters.reduce(query) do |acc, formatter|
           formatter.explicit(acc)
         end
       end
 
       def self.fix_format(list)
+        return list if list.empty?
         @formatters.reduce(list) do |acc, formatter|
           formatter.fix_format(acc)
         end
+      end
+
+      def self.fetch_list(query)
+        assign_formatters(query)
+        qry = explicit(query)
+        list = Sql.answer_to_query(JACINTHE_MODE, qry)
+        fix_format(list)
       end
     end
 
@@ -118,7 +124,14 @@ module JacintheManagement
       end
 
       def fix_line(line)
-        "#{line}\tadresse"
+        tiers_id = line[/^[^\t]*/]
+        address = fetch_address_for_tiers(tiers_id)
+        "#{line}\t#{address}"
+      end
+
+      def fetch_address_for_tiers(tiers_id)
+        qry = "select get_tiers_adresse_for_usage(#{tiers_id}, 1)"
+        Sql.answer_to_query(JACINTHE_MODE, qry)[1]
       end
     end
   end

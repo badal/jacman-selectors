@@ -61,9 +61,7 @@ module JacintheManagement
       # @return [Array<String>] edited SQl answer
       def get_list(query, values)
         qry = parameter(query, values)
-        list = Sql.answer_to_query(JACINTHE_MODE, qry)
-        return list if list.empty?
-        Formatters.fix_format(list)
+        Formatters.fetch_list(qry)
       end
 
       # @api
@@ -136,10 +134,6 @@ module JacintheManagement
       # @param [Array] values transmitted by the GUI
       # @return [String] actual query
       def parameter(query, values)
-        query = Formatters.explicit(query)
-
-        p query
-
         parameter, condition = extract(values)
         qry = parameter ? query.gsub('PARAM', parameter) : query
         condition ? qry.gsub('CONDITION', condition) : qry
