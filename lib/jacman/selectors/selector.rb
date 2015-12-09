@@ -41,8 +41,7 @@ module JacintheManagement
         new(YAML.load_file(path))
       end
 
-      # only external API values
-      attr_reader :name, :description, :parameter_list, :command_name
+      attr_reader :name, :description, :command_name
       attr_accessor :tiers_list
 
       # @param [Hash] hsh Hash of instance initial values
@@ -53,6 +52,12 @@ module JacintheManagement
           instance_variable_set("@#{key}", value)
           # define_method key.to_sym { instance_variable_get :"@#{key}"}
         end
+      end
+
+      # @api
+      # @return [Array<String>] Parameters to be shown in GUI
+      def parameter_list
+        @parameters ? @parameters.keys : nil
       end
 
       # @api
@@ -68,8 +73,8 @@ module JacintheManagement
       # @return [HTML String] edited message for GUI
       # @param [Array] values transmitted by the GUI
       def creation_message(values)
-        parameter, condition = extract(values)
-        par = "Paramètre : #{parameter}." if parameter
+        _, call, condition = extract(values)
+        par = "Paramètre : #{call}." if call
         ann = "Année de référence #{condition.sub('<=', '&le;')}." if @years
         text = 'Vous pouvez créer la sélection.'
         [par, ann, text].compact.join('<br>')
@@ -116,26 +121,22 @@ module JacintheManagement
         end
       end
 
-      # @param [Fixnum] indx index
-      # @return [String] parameter value for this index
-      def parameter_value(indx)
-        @parameter_list[indx]
-      end
-
       # @param [Array] values transmitted by the GUI
       # @return [Array] formatted parameters
       def extract(values)
         indx, condition = *values
-        parameter = "'#{@parameter_list[indx]}'" if (indx >= 0)
-        [parameter, condition]
+        return [nil, nil, condition] if indx < 0
+        parameter = @parameters.values[indx]
+        call = @parameters.keys[indx]
+        [parameter, call, condition]
       end
 
       # @param [String] query generic query with parameters
       # @param [Array] values transmitted by the GUI
       # @return [String] actual query
       def parameter(query, values)
-        parameter, condition = extract(values)
-        qry = parameter ? query.gsub('PARAM', parameter) : query
+        parameter, _, condition = extract(values)
+        qry = parameter ? query.gsub('PARAM', parameter.to_s) : query
         condition ? qry.gsub('CONDITION', condition) : qry
       end
 
