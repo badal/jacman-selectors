@@ -42,6 +42,8 @@ module JacintheManagement
       end
 
       attr_reader :name, :description, :command_name
+
+      attr_reader :table
       attr_accessor :tiers_list
 
       # @param [Hash] hsh Hash of instance initial values
@@ -97,14 +99,18 @@ module JacintheManagement
       # @return [Fixnum] number of content lines (excluding field names line)
       def build_tiers_list(values)
         @tiers_list = get_list(@query, values)
+
+        @table = Table.from_sql(@tiers_list)
+
         @tiers_list.size - 1
       end
 
       # @api
       # @param [Array] values transmitted by the GUI
       # @return [String] report
-      def execute(values)
-        cmds = command(values)
+      # @param [Array] tiers_list list of tiers_id's
+      def execute(values, tiers_list)
+        cmds = command(values, tiers_list)
         Sql.query(JACINTHE_MODE, cmds.join(';'))
         'Commande exécutée'
       end
@@ -142,10 +148,9 @@ module JacintheManagement
 
       # @param [Array] values transmitted by the GUI
       # @return [String] actual query of command
-      def command(values)
+      def command(values, tiers_list)
         qry = parameter(@command_query, values)
-        @tiers_list.drop(1).map do |line|
-          tiers_id = line.split("\t").first
+        tiers_list.map do |tiers_id|
           qry.sub('TIERS_ID', tiers_id)
         end
       end

@@ -10,6 +10,7 @@ require 'yaml'
 
 require_relative 'selectors/version.rb'
 require_relative 'selectors/formatters.rb'
+require_relative 'selectors/table.rb'
 require_relative 'selectors/selector.rb'
 
 module JacintheManagement
