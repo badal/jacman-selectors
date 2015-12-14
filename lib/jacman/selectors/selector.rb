@@ -42,9 +42,7 @@ module JacintheManagement
       end
 
       attr_reader :name, :description, :command_name
-
       attr_reader :table
-      attr_accessor :tiers_list
 
       # @param [Hash] hsh Hash of instance initial values
       # @return [Selector] a new instance
@@ -66,7 +64,7 @@ module JacintheManagement
       # @param [String] query generic query with parameters
       # @param [Array] values transmitted by the GUI
       # @return [Array<String>] edited SQl answer
-      def get_list(query, values)
+      def ask_sql(query, values)
         qry = parameter(query, values)
         Formatters.fetch_list(qry)
       end
@@ -97,12 +95,9 @@ module JacintheManagement
       #
       # @param [Array] values transmitted by the GUI
       # @return [Fixnum] number of content lines (excluding field names line)
-      def build_tiers_list(values)
-        @tiers_list = get_list(@query, values)
-
-        @table = Table.from_sql(@tiers_list)
-
-        @tiers_list.size - 1
+      def build_selection(values)
+        answer = ask_sql(@query, values)
+        @table = Table.from_sql(answer)
       end
 
       # @api

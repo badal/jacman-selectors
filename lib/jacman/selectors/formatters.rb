@@ -52,7 +52,6 @@ module JacintheManagement
 
     # generic class
     class Formatter
-
       # SQL generic tool to extract the array : id -> name from basic tables
       #
       # @param [String] table SQL table
@@ -80,13 +79,6 @@ module JacintheManagement
       end
 
       # identity
-      # @param [String] query to be formatted
-      # @return [String] formatted query
-      def explicit(query)
-        query
-      end
-
-      # identity
       # @param [String] old_labels fields separated by tabs
       # @return [String] formatted labels separated by tabs
       def fix_labels(old_labels)
@@ -94,7 +86,7 @@ module JacintheManagement
       end
 
       # identity
-      # @param [String] MySql answer line
+      # @param [String] line  MySql answer line
       # @return [String] formatted line for table
       def fix_line(line)
         line
@@ -133,7 +125,9 @@ module JacintheManagement
       # @return [String] completed line
       def fix_line(line)
         if PATTERN.match(line)
-          Regexp.last_match(1) + Formatter.countries[Regexp.last_match(2).to_i] + Regexp.last_match(3)
+          Regexp.last_match(1) +
+            Formatter.countries[Regexp.last_match(2).to_i] +
+            Regexp.last_match(3)
         else
           line
         end
